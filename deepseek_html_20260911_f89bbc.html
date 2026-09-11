@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deo Rivera</title>
+
+<!-- Inter: SF Pro lookalike, works on every OS -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- macOS / iOS-style type stack ----------
+     Order matters:
+     1. -apple-system / BlinkMacSystemFont  → real San Francisco on Apple devices
+     2. "SF Pro Display" / "SF Pro Text"    → explicit SF if installed
+     3. "Inter"                             → SF-metric-compatible fallback everywhere else
+     4. Helvetica Neue / Arial              → last resort
+  --------------------------------------------------- */
+
+  :root{
+    --ink:#f1efe9;
+    --ink-dim:rgba(241,239,233,.68);
+    --ink-faint:rgba(241,239,233,.42);
+    --line:rgba(241,239,233,.16);
+    --panel:rgba(28,27,24,.46);
+    --accent:#c9d19a;
+
+    --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+               "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+    font-feature-settings:"kern" 1, "liga" 1, "calt" 1;
+  }
+  body{
+    margin:0;
+    color:var(--ink);
+    font-family:var(--font-ui);
+    font-size:16px;
+    line-height:1.5;
+    letter-spacing:-0.005em;   /* SF Pro has slight negative tracking at body sizes */
+  }
+  a{color:inherit;text-decoration:none;}
+  .disp{
+    font-family:var(--font-ui);
+    font-weight:600;
+    letter-spacing:-0.02em;    /* SF Pro Display tightens more at display sizes */
+  }
+
+  /* ---------- Fixed full-page background ---------- */
+  .bg-photo{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background-color:#0e0d0b;
+    background-image:url("https://lh3.googleusercontent.com/d/1gKghv7uI-hy1iupaaYLONGKH982Gm3mW");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:top center;
+    filter:grayscale(100%) contrast(1.05);
+  }
+  .bg-scrim{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      linear-gradient(180deg, rgba(15,14,12,.72) 0%, rgba(15,14,12,.42) 22%, rgba(15,14,12,.5) 55%, rgba(15,14,12,.88) 100%);
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:26px 48px;
+    max-width:1280px;
+    margin:0 auto;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:19px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .brand-mark{
+    width:26px;height:26px;border-radius:50%;
+    background:var(--accent);
+    flex:none;
+  }
+  .nav-links{
+    display:flex;
+    gap:32px;
+    font-size:14.5px;
+    color:var(--ink-dim);
+    font-weight:400;
+  }
+  .nav-links a:hover{color:#fff;}
+  .nav-cta{
+    font-size:14.5px;
+    font-weight:500;
+    border-bottom:1px solid var(--line);
+    padding-bottom:2px;
+    transition:border-color .2s ease;
+  }
+  .nav-cta:hover{border-color:var(--ink);}
+
+  @media (max-width:760px){
+    .nav-links{display:none;}
+    nav{padding:22px 24px;}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero-wrap{
+    max-width:1280px;
+    margin:0 auto;
+    padding:60px 48px 0;
+  }
+
+  .hero{
+    display:grid;
+    grid-template-columns:1.15fr 1fr;
+    gap:40px;
+    align-items:center;
+    min-height:56vh;
+  }
+
+  .eyebrow{
+    font-size:11.5px;
+    font-weight:500;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin:0 0 16px;
+  }
+
+  .headline{
+    font-size:clamp(46px, 6.5vw, 78px);
+    font-weight:600;
+    line-height:1.02;
+    letter-spacing:-0.025em;   /* SF Pro Display tracking */
+    margin:0 0 22px;
+    max-width:12ch;
+  }
+
+  .tagline{
+    font-size:16px;
+    font-weight:400;
+    color:var(--ink-dim);
+    max-width:42ch;
+    margin:0 0 30px;
+    letter-spacing:-0.005em;
+  }
+
+  /* macOS Big Sur–style pill button */
+  .hero-cta{
+    display:inline-block;
+    font-size:14.5px;
+    font-weight:500;
+    letter-spacing:-0.01em;
+    background:var(--ink);
+    color:#16150f;
+    padding:13px 26px;
+    border-radius:980px;                 /* fully rounded, iOS style */
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.25),
+      inset 0 0.5px 0 rgba(255,255,255,.5);
+    transition:background-color .2s ease, transform .12s ease;
+  }
+  .hero-cta:hover{background:var(--accent);}
+  .hero-cta:active{transform:scale(.97);}
+
+  /* iOS-style frosted panel */
+  .stat-card{
+    background:var(--panel);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px 28px 10px;
+    box-shadow:
+      0 8px 32px rgba(0,0,0,.28),
+      inset 0 0.5px 0 rgba(255,255,255,.08);
+  }
+  .stat-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:13px 0;
+    border-top:1px solid var(--line);
+    font-size:13px;
+  }
+  .stat-row:first-child{border-top:none;}
+  .stat-row .num{
+    font-weight:600;
+    font-size:16px;
+    letter-spacing:-0.015em;
+    color:#fff;
+  }
+  .stat-row .lbl{
+    color:var(--ink-dim);
+    text-align:right;
+    letter-spacing:-0.005em;
+  }
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr; min-height:auto; padding-bottom:20px;}
+    .headline{max-width:100%;}
+  }
+  @media (max-width:520px){
+    .hero-wrap{padding:40px 22px 0;}
+  }
+
+  /* ---------- Directory ---------- */
+  .directory{
+    max-width:1280px;
+    margin:0 auto;
+    padding:70px 48px 100px;
+  }
+  @media (max-width:520px){ .directory{padding:50px 22px 70px;} }
+
+  .dir-intro{
+    font-size:15px;
+    color:var(--ink-dim);
+    max-width:44ch;
+    margin:0 0 46px;
+    letter-spacing:-0.005em;
+  }
+
+  .group{
+    margin-bottom:28px;
+    background:var(--panel);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:8px 26px;
+    box-shadow:
+      0 8px 32px rgba(0,0,0,.22),
+      inset 0 0.5px 0 rgba(255,255,255,.06);
+  }
+
+  .group-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:18px 0 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .group-title{
+    font-size:20px;
+    font-weight:600;
+    letter-spacing:-0.015em;
+  }
+  .group-count{
+    font-size:13px;
+    color:var(--ink-faint);
+  }
+
+  .entry{
+    display:flex;
+    align-items:baseline;
+    gap:18px;
+    padding:15px 0;
+    border-top:1px solid var(--line);
+    transition:padding-left .18s ease;
+  }
+  .group .entry:first-of-type{border-top:none;}
+  .entry:hover{padding-left:8px;}
+  .entry:hover .entry-name{color:var(--accent);}
+
+  .entry-name{
+    font-size:16.5px;
+    font-weight:500;
+    letter-spacing:-0.012em;
+    min-width:190px;
+    transition:color .18s ease;
+    color:#fff;
+  }
+  .entry-desc{
+    font-size:13.5px;
+    color:var(--ink-dim);
+    flex:1;
+    letter-spacing:-0.005em;
+  }
+  .entry-go{
+    font-size:13px;
+    color:var(--ink-faint);
+    flex:none;
+  }
+
+  @media (max-width:620px){
+    .entry{flex-wrap:wrap;}
+    .entry-name{min-width:0; width:100%;}
+    .entry-go{display:none;}
+    .group{padding:6px 18px;}
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    max-width:1280px;
+    margin:0 auto;
+    padding:30px 48px 60px;
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    color:var(--ink-faint);
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  @media (max-width:520px){ footer{padding:24px 22px 50px;} }
+
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<div class="bg-photo"></div>
+<div class="bg-scrim"></div>
+
+<nav>
+  <div class="brand disp"><span class="brand-mark"></span> Deo Rivera</div>
+  <div class="nav-links">
+    <a href="#prdp">PRDP</a>
+    <a href="#gss">GSS &amp; fleet</a>
+    <a href="#tools">Tools</a>
+  </div>
+  <a class="nav-cta" href="https://github.com/deogrivera" target="_blank" rel="noopener">GitHub &nearr;</a>
+</nav>
+
+<div class="hero-wrap">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Action Officer &middot; PRDP RPCO I</p>
+      <h1 class="headline disp">One page, every tool.</h1>
+      <p class="tagline">Trackers built over time for PRDP RPCO I &mdash; financial monitoring, fleet management, and signing, all in one place. Pick one below instead of hunting for the bookmark.</p>
+      <a class="hero-cta" href="https://docs.google.com/spreadsheets/d/15AwW6lZKac5jsUaWryHaeEcMd14KP4yqOtCluJXbSlI/edit?gid=0#gid=0" target="_blank" rel="noopener">Show Data Sources</a>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-row"><span class="num">14+</span><span class="lbl">Tools &amp; dashboards built</span></div>
+      <div class="stat-row"><span class="num">4</span><span class="lbl">PRDP components covered</span></div>
+      <div class="stat-row"><span class="num">1</span><span class="lbl">Page instead of a bookmark folder</span></div>
+      <div class="stat-row"><span class="num">2026</span><span class="lbl">Actively maintained</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="directory">
+  <p class="dir-intro">Every site below lives at deogrivera.github.io/&mdash; click through instead of hunting for the bookmark.</p>
+
+  <div class="group" id="prdp">
+    <div class="group-head">
+      <span class="group-title disp">PRDP monitoring</span>
+      <span class="group-count">4</span>
+    </div>
+    <a class="entry" href="https://deogrivera.github.io/PRDP_Financial" target="_blank" rel="noopener">
+      <span class="entry-name">PRDP_Financial</span>
+      <span class="entry-desc">Overall financial status across PRDP components</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/PRDP_Obligation" target="_blank" rel="noopener">
+      <span class="entry-name">PRDP_Obligation</span>
+      <span class="entry-desc">Financial obligation monitoring dashboard</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/PRDP_Disbursement" target="_blank" rel="noopener">
+      <span class="entry-name">PRDP_Disbursement</span>
+      <span class="entry-desc">Disbursement tracking dashboard</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/IBUILDSP" target="_blank" rel="noopener">
+      <span class="entry-name">IBUILDSP</span>
+      <span class="entry-desc">I-BUILD subproject obligation &amp; accomplishment tracker</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+  </div>
+
+  <div class="group" id="gss">
+    <div class="group-head">
+      <span class="group-title disp">GSS &amp; fleet</span>
+      <span class="group-count">4</span>
+    </div>
+    <a class="entry" href="https://deogrivera.github.io/FleetLiquidation" target="_blank" rel="noopener">
+      <span class="entry-name">FleetLiquidation</span>
+      <span class="entry-desc">Gasoline receipt liquidation tracker</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/Tripticketboard" target="_blank" rel="noopener">
+      <span class="entry-name">Tripticketboard</span>
+      <span class="entry-desc">Trip ticket pool board for carpooling official travel</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/GMMG" target="_blank" rel="noopener">
+      <span class="entry-name">GMMG</span>
+      <span class="entry-desc">GSS tracker &mdash; tell me what this one does and I'll fix this line</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/Voucher" target="_blank" rel="noopener">
+      <span class="entry-name">Voucher</span>
+      <span class="entry-desc">Voucher tracker &mdash; tell me what this one does and I'll fix this line</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+  </div>
+
+  <div class="group" id="tools">
+    <div class="group-head">
+      <span class="group-title disp">Signing &amp; personal tools</span>
+      <span class="group-count">4</span>
+    </div>
+    <a class="entry" href="https://deogrivera.github.io/Myesig" target="_blank" rel="noopener">
+      <span class="entry-name">Myesig</span>
+      <span class="entry-desc">Personal e-signature tool for signing PDFs</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/esig" target="_blank" rel="noopener">
+      <span class="entry-name">esig</span>
+      <span class="entry-desc">E-signature tool &mdash; tell me how this differs from Myesig</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/eSigKo" target="_blank" rel="noopener">
+      <span class="entry-name">eSigKo</span>
+      <span class="entry-desc">E-signature tool &mdash; tell me how this differs from the others</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/Billwise" target="_blank" rel="noopener">
+      <span class="entry-name">Billwise</span>
+      <span class="entry-desc">Personal bill tracker</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+  </div>
+
+  <div class="group">
+    <div class="group-head">
+      <span class="group-title disp">Other</span>
+      <span class="group-count">2</span>
+    </div>
+    <a class="entry" href="https://deogrivera.github.io/V2" target="_blank" rel="noopener">
+      <span class="entry-name">V2</span>
+      <span class="entry-desc">Tell me what this is and I'll fill this in</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+    <a class="entry" href="https://deogrivera.github.io/FE" target="_blank" rel="noopener">
+      <span class="entry-name">FE</span>
+      <span class="entry-desc">Tell me what this is and I'll fill this in</span>
+      <span class="entry-go">Open &rarr;</span>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <span>deogrivera.github.io</span>
+  <span>City of San Fernando, La Union</span>
+</footer>
+
+</body>
+</html>
